@@ -24,18 +24,18 @@ export class UserService {
     });
   }
 
-  async update(id: number, updateUserDto: UpdatePutUserDto) {
+  async update(id: number, data: UpdatePutUserDto) {
     return await this.prisma.user.update({
-      data: updateUserDto,
+      data,
       where: {
         id,
       },
     });
   }
 
-  async updatePartial(id: number, updateUserDto: UpdatePatchUserDto) {
+  async updatePartial(id: number, data: UpdatePatchUserDto) {
     return await this.prisma.user.update({
-      data: updateUserDto,
+      data,
       where: {
         id,
       },

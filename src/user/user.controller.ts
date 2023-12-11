@@ -34,19 +34,16 @@ export class UserController {
   }
 
   @Put(":id")
-  put(
-    @Param("id", ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdatePutUserDto,
-  ) {
-    return this.userService.update(+id, updateUserDto);
+  put(@Param("id", ParseIntPipe) id: number, @Body() data: UpdatePutUserDto) {
+    return this.userService.update(+id, data);
   }
 
   @Patch(":id")
   update(
     @Param("id", ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdatePatchUserDto,
+    @Body() data: UpdatePatchUserDto,
   ) {
-    return this.userService.updatePartial(+id, updateUserDto);
+    return this.userService.updatePartial(+id, data);
   }
 
   @Delete(":id")
