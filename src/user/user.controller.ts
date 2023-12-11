@@ -46,7 +46,7 @@ export class UserController {
     @Param("id", ParseIntPipe) id: number,
     @Body() updateUserDto: UpdatePatchUserDto,
   ) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.updatePartial(+id, updateUserDto);
   }
 
   @Delete(":id")
