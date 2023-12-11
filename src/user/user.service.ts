@@ -8,9 +8,14 @@ import { UpdatePutUserDto } from "./dto/update-put-user.dto copy";
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateUserDto) {
+  async create({ name, email, password, birthAt }: CreateUserDto) {
     return await this.prisma.user.create({
-      data,
+      data: {
+        name,
+        email,
+        password,
+        birthAt: birthAt ? new Date(birthAt) : "",
+      },
     });
   }
 
@@ -24,16 +29,35 @@ export class UserService {
     });
   }
 
-  async update(id: number, data: UpdatePutUserDto) {
+  async update(
+    id: number,
+    { name, email, password, birthAt }: UpdatePutUserDto,
+  ) {
     return await this.prisma.user.update({
-      data,
+      data: {
+        name,
+        email,
+        password,
+        birthAt: birthAt ? new Date(birthAt) : "",
+      },
       where: {
         id,
       },
     });
   }
 
-  async updatePartial(id: number, data: UpdatePatchUserDto) {
+  async updatePartial(
+    id: number,
+    { name, email, password, birthAt }: UpdatePatchUserDto,
+  ) {
+    const data: any = {};
+
+    if (birthAt) data.birthAt = new Date(birthAt);
+
+    if (name) data.name = name;
+    if (email) data.email = email;
+    if (password) data.password = password;
+
     return await this.prisma.user.update({
       data,
       where: {
