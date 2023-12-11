@@ -4,10 +4,8 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   Put,
-  ParseIntPipe,
   UseInterceptors,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
@@ -43,20 +41,17 @@ export class UserController {
   }
 
   @Put(":id")
-  put(@Param("id", ParseIntPipe) id: number, @Body() data: UpdatePutUserDto) {
+  put(@ParamId() id: number, @Body() data: UpdatePutUserDto) {
     return this.userService.update(+id, data);
   }
 
   @Patch(":id")
-  update(
-    @Param("id", ParseIntPipe) id: number,
-    @Body() data: UpdatePatchUserDto,
-  ) {
+  update(@ParamId() id: number, @Body() data: UpdatePatchUserDto) {
     return this.userService.updatePartial(+id, data);
   }
 
   @Delete(":id")
-  async remove(@Param("id", ParseIntPipe) id: number) {
+  async remove(@ParamId() id: number) {
     return await this.userService.remove(+id);
   }
 }
