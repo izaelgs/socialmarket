@@ -15,6 +15,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdatePatchUserDto } from "./dto/update-patch-user.dto";
 import { UpdatePutUserDto } from "./dto/update-put-user.dto copy";
 import { LogInterceptor } from "src/interceptors/log.interceptor";
+import { ParamId } from "src/decorators/param-id.decorator";
 
 @Controller("user")
 export class UserController {
@@ -37,8 +38,8 @@ export class UserController {
   }
 
   @Get(":id")
-  findOne(@Param("id", ParseIntPipe) id: number) {
-    return this.userService.findOne(+id);
+  findOne(@ParamId() id: number) {
+    return this.userService.findOne(id);
   }
 
   @Put(":id")
