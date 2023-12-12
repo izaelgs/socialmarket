@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { AuthController } from "./auth.controller";
 import { UserModule } from "src/user/user.module";
@@ -11,10 +11,11 @@ import { AuthService } from "./auth.service";
     JwtModule.register({
       secret: "7,£Jl`{-XP2=4%g(i2_+W)z>wu>r84:H",
     }),
-    UserModule,
+    forwardRef(() => UserModule),
     PrismaModule
   ],
   providers: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
+  exports: [AuthService]
 })
 export class AuthModule {}
