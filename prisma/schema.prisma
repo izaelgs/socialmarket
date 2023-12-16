@@ -9,14 +9,18 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement()) @db.UnsignedInt
-  name      String    @db.VarChar(155)
-  email     String    @db.VarChar(255)
-  password  String    @db.VarChar(255)
-  birthAt   DateTime? @db.Date
-  role      Int       @default(1)
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  updatedAt DateTime? @default(now()) @db.Timestamp(0)
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  name        String    @db.VarChar(155)
+  username    String    @db.VarChar(155)
+  email       String    @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  birthAt     DateTime? @db.Date
+  role        Int       @default(1)
+  about       String    @db.Text()
+  photo       String    @db.Text()
+  cover_photo String    @db.Text()
+  createdAt   DateTime? @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime? @default(now()) @db.Timestamp(0)
 
   @@map("users")
 }
