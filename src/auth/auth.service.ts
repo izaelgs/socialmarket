@@ -51,7 +51,9 @@ export class AuthService {
     if(!user || !await bcrypt.compare(password, user.password))
       throw new NotFoundException('Email e/ou senha incorretos.');
 
-    return this.createToken(user);
+    const token = await this.createToken(user);
+
+    return {user, ...token};
   }
   async forget(email: string) {
     const user = await this.prisma.user.findFirst({
