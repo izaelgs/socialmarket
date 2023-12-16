@@ -4,6 +4,7 @@ import { UpdatePatchUserDto } from "./dto/update-patch-user.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UpdatePutUserDto } from "./dto/update-put-user.dto copy";
 import * as bcrypt from "bcrypt";
+import slugify from "slugify";
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,8 @@ export class UserService {
     data.password = await bcrypt.hash(data.password, await bcrypt.genSalt());
 
     if (data.birthAt) data.birthAt = new Date(data.birthAt).toISOString();
+
+    data.username = slugify(data.name, { lower: true });
 
     return await this.prisma.user.create({
       data,
