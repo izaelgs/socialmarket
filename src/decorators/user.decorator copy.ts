@@ -12,7 +12,7 @@ export const User = createParamDecorator(
         return request.user[field];
       }
 
-      return {...request.user, password: undefined, id: undefined};
+      return request.user;
     } else
       throw new NotFoundException("Usuário não encontrado no request");
   },

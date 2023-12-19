@@ -38,7 +38,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Post('me')
   async me(@User() user) {
-    return user;
+    return {...user, password: undefined, id: undefined};
   }
 
   @UseGuards(AuthGuard)
