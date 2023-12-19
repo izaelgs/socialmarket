@@ -58,7 +58,17 @@ export class UserService {
 
   async updatePartial(
     id: number,
-    { name, email, password, birthAt, role }: UpdatePatchUserDto,
+    {
+      name,
+      email,
+      password,
+      birthAt,
+      username,
+      about,
+      photo,
+      cover_photo,
+      role,
+    }: UpdatePatchUserDto,
   ) {
     await this.exists(id);
 
@@ -68,6 +78,10 @@ export class UserService {
 
     if (name) data.name = name;
     if (email) data.email = email;
+    if (username) data.username = username;
+    if (about) data.about = about;
+    if (photo) data.photo = photo;
+    if (cover_photo) data.cover_photo = cover_photo;
 
     if (password)
       data.password = await bcrypt.hash(password, await bcrypt.genSalt());

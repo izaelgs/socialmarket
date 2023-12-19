@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Headers, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Patch, Post, UseGuards } from "@nestjs/common";
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
@@ -8,6 +8,7 @@ import { AuthService } from "./auth.service";
 import { AuthResetDTO } from "./dto/auth-reset.dto";
 import { AuthGuard } from "src/guards/auth.guard";
 import { User } from "src/decorators/user.decorator copy";
+import { UpdatePatchUserDto } from "src/user/dto/update-patch-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -38,5 +39,11 @@ export class AuthController {
   @Post('me')
   async me(@User() user) {
     return user;
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch()
+  update(@User() user, @Body() data: UpdatePatchUserDto) {
+    return this.userService.updatePartial(user.id, data);
   }
 }
