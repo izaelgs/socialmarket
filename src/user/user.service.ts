@@ -90,7 +90,9 @@ export class UserService {
 
     if (role) data.role = role;
 
-    return await this.usersRepository.update(id, data);
+    await this.usersRepository.update(id, data);
+
+    return this.findOne(id);
   }
 
   async remove(id: number) {
