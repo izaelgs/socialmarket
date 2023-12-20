@@ -33,10 +33,10 @@ export class AuthController {
     this.authService.forget(email);
   }
 
-  @Post('reset')
-  async reset(@Body() { password, token }: AuthResetDTO) {
-    this.authService.reset(password, token);
-  }
+  // @Post('reset')
+  // async reset(@Body() { password, token }: AuthResetDTO) {
+  //   this.authService.reset(password, token);
+  // }
 
   @UseGuards(AuthGuard)
   @Post('me')
@@ -44,11 +44,11 @@ export class AuthController {
     return { ...user, password: undefined, id: undefined };
   }
 
-  @UseGuards(AuthGuard)
-  @Patch()
-  update(@User() user, @Body() data: UpdatePatchUserDto) {
-    return this.userService.updatePartial(user.id, data);
-  }
+  // @UseGuards(AuthGuard)
+  // @Patch()
+  // update(@User() user, @Body() data: UpdatePatchUserDto) {
+  //   return this.userService.updatePartial(user.id, data);
+  // }
 
   @UseInterceptors(FileInterceptor('file'))
   @UseGuards(AuthGuard)
