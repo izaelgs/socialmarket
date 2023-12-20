@@ -47,13 +47,15 @@ export class UserService {
 
     password = await bcrypt.hash(password, await bcrypt.genSalt());
 
-    return await this.usersRepository.update(id, {
+    await this.usersRepository.update(id, {
       name,
       email,
       password,
       role,
       birthAt: birthAt ? new Date(birthAt) : "",
     });
+
+    return this.findOne(id);
   }
 
   async updatePartial(
