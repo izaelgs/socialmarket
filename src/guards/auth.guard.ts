@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService
-  ) {}
+  ) { }
 
   async canActivate(
     context: ExecutionContext,
@@ -17,9 +17,10 @@ export class AuthGuard implements CanActivate {
 
     try {
       const request = context.switchToHttp().getRequest();
-      const { authorization } = request.headers;
 
-      const data = this.authService.checkToken((authorization ?? '').split(' ')[1]);
+      const { access_token } = request.cookies;
+
+      const data = this.authService.checkToken(access_token);
 
       const user = await this.userService.findOne(data.id);
 
@@ -27,6 +28,7 @@ export class AuthGuard implements CanActivate {
 
       return true;
     } catch (error) {
+      console.error(error);
       return false;
     }
 

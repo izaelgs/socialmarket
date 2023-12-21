@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { BadRequestException, Body, Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Patch, Post, Response, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
@@ -19,13 +19,13 @@ export class AuthController {
   constructor(private readonly userService: UserService, private readonly authService: AuthService, private readonly fileService: FileService) { }
 
   @Post("login")
-  async login(@Body() { email, password }: AuthLoginDTO) {
-    return await this.authService.login(email, password);
+  async login(@Body() { email, password }: AuthLoginDTO, @Response() res) {
+    return await this.authService.login(email, password, res);
   }
 
   @Post('register')
-  async register(@Body() body: AuthRegisterDTO) {
-    return await this.authService.register(body);
+  async register(@Body() body: AuthRegisterDTO, @Response() res) {
+    return await this.authService.register(body, res);
   }
 
   @Post('forget')
@@ -33,10 +33,10 @@ export class AuthController {
     this.authService.forget(email);
   }
 
-  // @Post('reset')
-  // async reset(@Body() { password, token }: AuthResetDTO) {
-  //   this.authService.reset(password, token);
-  // }
+  @Post('reset')
+  async reset(@Body() { password, token }: AuthResetDTO, @Response() res) {
+    this.authService.reset(password, token, res);
+  }
 
   @UseGuards(AuthGuard)
   @Post('me')
@@ -44,11 +44,11 @@ export class AuthController {
     return { ...user, password: undefined, id: undefined };
   }
 
-  // @UseGuards(AuthGuard)
-  // @Patch()
-  // update(@User() user, @Body() data: UpdatePatchUserDto) {
-  //   return this.userService.updatePartial(user.id, data);
-  // }
+  @UseGuards(AuthGuard)
+  @Patch()
+  update(@User() user, @Body() data: UpdatePatchUserDto) {
+    return this.userService.updatePartial(user.id, data);
+  }
 
   @UseInterceptors(FileInterceptor('file'))
   @UseGuards(AuthGuard)

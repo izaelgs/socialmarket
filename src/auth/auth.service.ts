@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, Response } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import * as bcrypt from "bcrypt";
@@ -43,7 +43,7 @@ export class AuthService {
     }
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string, @Response() res) {
     const user = await this.usersRepository.findOne({
       where: {
         email,
@@ -53,9 +53,13 @@ export class AuthService {
     if (!user || !await bcrypt.compare(password, user.password))
       throw new NotFoundException('Email e/ou senha incorretos.');
 
-    const token = await this.createToken(user);
+    const { access_token } = await this.createToken(user);
 
-    return { user, ...token };
+    return res.cookie('access_token', access_token, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      sameSite: 'strict',
+      httpOnly: true,
+    }).send({ user });
   }
 
   async forget(email: string) {
@@ -71,7 +75,7 @@ export class AuthService {
     return true;
   }
 
-  async reset(password: string, token: string) {
+  async reset(password: string, token: string, @Response() res) {
     //TO DO: validar o token....
 
     const id = 0;
@@ -82,12 +86,23 @@ export class AuthService {
 
     const user = await this.userService.findOne(id);
 
-    return this.createToken(user);
+    const { access_token } = await this.createToken(user);
+
+    return res.cookie('access_token', access_token, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      sameSite: 'strict',
+      httpOnly: true,
+    }).send({ user });
   }
 
-  async register(data: AuthRegisterDTO) {
+  async register(data: AuthRegisterDTO, @Response() res) {
     const user = await this.usersRepository.create(data);
+    const { access_token } = await this.createToken(user);
 
-    return this.createToken(user);
+    return res.cookie('access_token', access_token, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      sameSite: 'strict',
+      httpOnly: true,
+    }).send({ user });
   }
 }
