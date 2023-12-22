@@ -16,7 +16,9 @@ export class AuthGuard implements CanActivate {
   ) {
 
     try {
+
       const request = context.switchToHttp().getRequest();
+      request.user = undefined;
 
       const { access_token } = request.cookies;
 
@@ -28,7 +30,7 @@ export class AuthGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return false;
     }
 

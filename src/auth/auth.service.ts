@@ -96,7 +96,7 @@ export class AuthService {
   }
 
   async register(data: AuthRegisterDTO, @Response() res) {
-    const user = await this.usersRepository.create(data);
+    const user = await this.userService.create(data);
     const { access_token } = await this.createToken(user);
 
     return res.cookie('access_token', access_token, {
