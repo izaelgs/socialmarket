@@ -62,6 +62,10 @@ export class AuthService {
     }).send({ user });
   }
 
+  async logout(@Response() res) {
+    return res.clearCookie('access_token').send();
+  }
+
   async forget(email: string) {
     const user = await this.usersRepository.findOne({
       where: {

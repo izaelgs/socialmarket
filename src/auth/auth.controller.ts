@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Patch, Post, Response, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Patch, Post, Response, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
@@ -19,6 +19,11 @@ export class AuthController {
   @Post("login")
   async login(@Body() { email, password }: AuthLoginDTO, @Response() res) {
     return await this.authService.login(email, password, res);
+  }
+
+  @Post("logout")
+  async logout(@Response() res) {
+    return await this.authService.logout(res);
   }
 
   @Post('register')
@@ -54,5 +59,14 @@ export class AuthController {
     @Body() data: any
   ) {
     return this.userService.updatePartial(user.id, { ...data, ...files});
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete()
+  async remove(@User('id') id: number, @Response() res) {
+    await this.userService.deleteUserAvatar(+id);
+    await this.userService.deleteCoverPhoto(+id);
+    await this.userService.remove(+id);
+    return await this.authService.logout(res);
   }
 }
