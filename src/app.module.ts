@@ -10,6 +10,7 @@ import { ConfigModule } from "@nestjs/config";
 import { FileModule } from "./file/file.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserEntity } from "./user/entities/user.entity";
+import { EmailService } from './email/email.service';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { UserEntity } from "./user/entities/user.entity";
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    EmailService,
   ],
 })
 export class AppModule { }

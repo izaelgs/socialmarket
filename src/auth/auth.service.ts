@@ -1,5 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { BadRequestException, Injectable, NotFoundException, Response } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  Response,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import * as bcrypt from "bcrypt";
@@ -7,6 +12,7 @@ import { UserEntity } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserService } from "src/user/user.service";
+import { EmailService } from "src/email/email.service";
 
 @Injectable()
 export class AuthService {
@@ -14,29 +20,33 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly emailService: EmailService,
   ) { }
 
-  async createToken(user: UserEntity) {
+  async createToken(user: UserEntity, issuer?: string, expiresIn?: string) {
     return {
-      access_token: this.jwtService.sign({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      }, {
-        expiresIn: "7 days",
-        subject: String(user.id),
-        issuer: "login",
-        audience: 'users',
-      })
+      access_token: this.jwtService.sign(
+        {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
+        {
+          expiresIn: expiresIn ?? "7 days",
+          subject: String(user.id),
+          issuer: issuer ?? "login",
+          audience: "users",
+        },
+      ),
     };
   }
 
-  checkToken(token: string) {
+  checkToken(token: string, issuer?: string) {
     try {
       return this.jwtService.verify(token, {
-        audience: 'users',
-        issuer: "login",
+        audience: "users",
+        issuer: issuer ?? "login",
       });
     } catch (error) {
       throw new BadRequestException(error);
@@ -47,66 +57,69 @@ export class AuthService {
     const user = await this.usersRepository.findOne({
       where: {
         email,
-      }
-    })
+      },
+    });
 
-    if (!user || !await bcrypt.compare(password, user.password))
-      throw new NotFoundException('Email e/ou senha incorretos.');
+    if (!user || !(await bcrypt.compare(password, user.password)))
+      throw new NotFoundException("Email e/ou senha incorretos.");
 
     const { access_token } = await this.createToken(user);
 
-    return res.cookie('access_token', access_token, {
-      expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
-      sameSite: 'strict',
-      httpOnly: true,
-    }).send({ user });
+    return res
+      .cookie("access_token", access_token, {
+        expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+        sameSite: "strict",
+        httpOnly: true,
+      })
+      .send({ user });
   }
 
   async logout(@Response() res) {
-    return res.clearCookie('access_token').send();
+    return res.clearCookie("access_token").send();
   }
 
   async forget(email: string) {
     const user = await this.usersRepository.findOne({
       where: {
         email,
-      }
-    })
+      },
+    });
 
-    if (!user)
-      throw new NotFoundException('Email está incorreto.');
+    if (!user) throw new NotFoundException("Email está incorreto.");
+
+    const { access_token } = await this.createToken(user, "reset_password", "1 day");
+
+    this.emailService.sendEmail(
+      email,
+      "Recuperação de senha",
+      `Para recuperar a senha, clique no link: ${process.env.APP_URL}/reset-password/${access_token}`,
+    );
 
     return true;
   }
 
-  async reset(password: string, token: string, @Response() res) {
-    //TO DO: validar o token....
+  async reset(password: string, token: string) {
+    const user = this.checkToken(token, "reset_password");
 
-    const id = 0;
+    password = await bcrypt.hash(password, await bcrypt.genSalt());
 
-    await this.usersRepository.update(id, {
+    await this.usersRepository.update(user.id, {
       password,
     });
 
-    const user = await this.userService.findOne(id);
-
-    const { access_token } = await this.createToken(user);
-
-    return res.cookie('access_token', access_token, {
-      expires: new Date(new Date().getTime() + 30 * 1000),
-      sameSite: 'strict',
-      httpOnly: true,
-    }).send({ user });
+    return true;
   }
 
   async register(data: AuthRegisterDTO, @Response() res) {
     const user = await this.userService.create(data);
     const { access_token } = await this.createToken(user);
 
-    return res.cookie('access_token', access_token, {
-      expires: new Date(new Date().getTime() + 30 * 1000),
-      sameSite: 'strict',
-      httpOnly: true,
-    }).send({ user });
+    return res
+      .cookie("access_token", access_token, {
+        expires: new Date(new Date().getTime() + 30 * 1000),
+        sameSite: "strict",
+        httpOnly: true,
+      })
+      .send({ user });
   }
 }

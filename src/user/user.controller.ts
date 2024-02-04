@@ -6,14 +6,12 @@ import {
   Patch,
   Delete,
   Put,
-  UseInterceptors,
   UseGuards,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdatePatchUserDto } from "./dto/update-patch-user.dto";
 import { UpdatePutUserDto } from "./dto/update-put-user.dto copy";
-import { LogInterceptor } from "src/interceptors/log.interceptor";
 import { ParamId } from "src/decorators/param-id.decorator";
 import { Roles } from "src/decorators/role.decorator";
 import { Role } from "src/enums/role.enum";
@@ -28,12 +26,6 @@ export class UserController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
-  @UseInterceptors(LogInterceptor)
-  @Post("interceptor")
-  createInterceptor(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 

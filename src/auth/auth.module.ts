@@ -7,6 +7,7 @@ import { AuthService } from "./auth.service";
 import { FileModule } from "src/file/file.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserEntity } from "src/user/entities/user.entity";
+import { EmailModule } from "src/email/email.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserEntity } from "src/user/entities/user.entity";
     }),
     forwardRef(() => UserModule),
     FileModule,
+    EmailModule,
     TypeOrmModule.forFeature([UserEntity]),
   ],
   providers: [AuthService],

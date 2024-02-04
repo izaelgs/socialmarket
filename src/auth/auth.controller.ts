@@ -31,14 +31,14 @@ export class AuthController {
     return await this.authService.register(body, res);
   }
 
-  @Post('forget')
+  @Post('forgot-password')
   async forget(@Body() { email }: AuthForgetDTO) {
     this.authService.forget(email);
   }
 
-  @Post('reset')
-  async reset(@Body() { password, token }: AuthResetDTO, @Response() res) {
-    this.authService.reset(password, token, res);
+  @Post('reset-password')
+  async reset(@Body() { password, token }: AuthResetDTO) {
+    return this.authService.reset(password, token);
   }
 
   @UseGuards(AuthGuard)
