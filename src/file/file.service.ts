@@ -13,31 +13,14 @@ export class FileService {
   });
 
   async upload(file: Express.Multer.File, path: string) {
-    console.log({
-      accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_S3_ACCESS_KEY,
-    });
-
     const newFileName = uuidv4();
 
-    return await this.s3_upload(
-      file.buffer,
-      this.AWS_S3_BUCKET,
-      newFileName,
-      file.mimetype,
-      path,
-    );
+    return await this.s3_upload(file.buffer, newFileName, file.mimetype, path);
   }
 
-  async s3_upload(
-    file: Buffer,
-    bucket: string,
-    name: string,
-    mimetype: string,
-    path: string,
-  ) {
+  async s3_upload(file: Buffer, name: string, mimetype: string, path: string) {
     const params = {
-      Bucket: bucket,
+      Bucket: this.AWS_S3_BUCKET,
       Key: String(name),
       Body: file,
       ACL: "public-read",
@@ -51,6 +34,20 @@ export class FileService {
 
     try {
       const s3Response = await this.s3.upload(params).promise();
+      return s3Response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async s3_delete(Key: string) {
+    const params = {
+      Bucket: this.AWS_S3_BUCKET,
+      Key: Key,
+    };
+
+    try {
+      const s3Response = await this.s3.deleteObject(params).promise();
       return s3Response;
     } catch (error) {
       throw error;

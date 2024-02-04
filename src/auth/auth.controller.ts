@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Patch, Post, Response, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Patch, Post, Response, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
@@ -8,7 +8,7 @@ import { AuthService } from "./auth.service";
 import { AuthResetDTO } from "./dto/auth-reset.dto";
 import { AuthGuard } from "src/guards/auth.guard";
 import { User } from "src/decorators/user.decorator";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { FileService } from "src/file/file.service";
 
 @Controller("auth")
@@ -44,8 +44,15 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Patch()
-  @UseInterceptors(FileInterceptor('photo'))
-  update(@User() user, @UploadedFile() photo, @Body() data: any) {
-    return this.userService.updatePartial(user.id, {...data, photo});
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'photo', maxCount: 1 },
+    { name: 'cover_photo', maxCount: 1 },
+  ]))
+  update(
+    @User() user,
+    @UploadedFiles() files: { photo?: Express.Multer.File[], cover_photo?: Express.Multer.File[] },
+    @Body() data: any
+  ) {
+    return this.userService.updatePartial(user.id, { ...data, ...files});
   }
 }

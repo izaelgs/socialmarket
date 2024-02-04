@@ -89,14 +89,23 @@ export class UserService {
     if (username) data.username = username;
     if (about) data.about = about;
 
-    if (photo) {
+    if (photo && typeof photo !== "string") {
+      this.deleteUserAvatar(id);
       const photoResponse = await this.fileService.upload(
-        photo,
+        photo[0],
         `profile-avatars/${id}`,
       );
       data.photo = photoResponse.Location;
     }
-    if (cover_photo) console.log(cover_photo);
+
+    if (cover_photo && typeof cover_photo !== "string") {
+      this.deleteCoverPhoto(id);
+      const photoResponse = await this.fileService.upload(
+        cover_photo[0],
+        `profile-covers/${id}`,
+      );
+      data.cover_photo = photoResponse.Location;
+    }
 
     if (password)
       data.password = await bcrypt.hash(password, await bcrypt.genSalt());
@@ -125,6 +134,24 @@ export class UserService {
       throw new NotFoundException(
         `Não foi encontrado nenhum usuário com o id ${id}`,
       );
+    }
+  }
+
+  async deleteUserAvatar(id: number) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (user.photo) {
+      const photo = user.photo.split("/");
+      await this.fileService.s3_delete(photo[photo.length - 1]);
+    }
+  }
+
+  async deleteCoverPhoto(id: number) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (user.cover_photo) {
+      const photo = user.cover_photo.split("/");
+      await this.fileService.s3_delete(photo[photo.length - 1]);
     }
   }
 }
