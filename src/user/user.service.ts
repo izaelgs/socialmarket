@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdatePatchUserDto } from "./dto/update-patch-user.dto";
 import { UpdatePutUserDto } from "./dto/update-put-user.dto copy";
@@ -7,12 +11,14 @@ import slugify from "slugify";
 import { Repository } from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { FileService } from "src/file/file.service";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
+    private readonly usersRepository: Repository<UserEntity>,
+    private readonly fileService: FileService,
   ) {}
 
   async create(data: CreateUserDto) {
@@ -82,8 +88,15 @@ export class UserService {
     if (email) data.email = email;
     if (username) data.username = username;
     if (about) data.about = about;
-    if (photo) data.photo = photo;
-    if (cover_photo) data.cover_photo = cover_photo;
+
+    if (photo) {
+      const photoResponse = await this.fileService.upload(
+        photo,
+        `profile-avatars/${id}`,
+      );
+      data.photo = photoResponse.Location;
+    }
+    if (cover_photo) console.log(cover_photo);
 
     if (password)
       data.password = await bcrypt.hash(password, await bcrypt.genSalt());

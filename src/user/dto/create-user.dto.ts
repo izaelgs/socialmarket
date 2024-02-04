@@ -9,26 +9,6 @@ import {
 } from "class-validator";
 import { Role } from "src/enums/role.enum";
 
-// export class CreateUserDto {
-//   @IsString()
-//   name: string;
-
-//   @IsOptional()
-//   @IsEnum(Role)
-//   role?: number;
-//   username?: string;
-
-//   @IsEmail()
-//   email: string;
-
-//   @IsStrongPassword()
-//   password: string;
-
-//   @IsOptional()
-//   @IsDateString()
-//   birthAt: string;
-// }
-
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
@@ -51,12 +31,6 @@ export class CreateUserDto {
 
   @IsString()
   about: string;
-
-  @IsString()
-  photo: string;
-
-  @IsString()
-  cover_photo: string;
 
   @IsOptional()
   @IsEnum(Role)
