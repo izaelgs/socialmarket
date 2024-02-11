@@ -11,7 +11,7 @@ import slugify from "slugify";
 import { Repository } from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FileService } from "src/file/file.service";
+import { FileService } from "../file/file.service";
 
 @Injectable()
 export class UserService {

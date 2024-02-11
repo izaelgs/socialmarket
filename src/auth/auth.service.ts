@@ -8,11 +8,11 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import * as bcrypt from "bcrypt";
-import { UserEntity } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserService } from "src/user/user.service";
-import { EmailService } from "src/email/email.service";
+import { UserEntity } from "../user/entities/user.entity";
+import { UserService } from "../user/user.service";
+import { EmailService } from "../email/email.service";
 
 @Injectable()
 export class AuthService {

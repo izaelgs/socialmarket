@@ -3,13 +3,13 @@ import { Body, Controller, Delete, Get, Patch, Post, Response, UploadedFiles, Us
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
-import { UserService } from "src/user/user.service";
 import { AuthService } from "./auth.service";
 import { AuthResetDTO } from "./dto/auth-reset.dto";
-import { AuthGuard } from "src/guards/auth.guard";
-import { User } from "src/decorators/user.decorator";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { FileService } from "src/file/file.service";
+import { UserService } from "../user/user.service";
+import { FileService } from "../file/file.service";
+import { AuthGuard } from "../guards/auth.guard";
+import { User } from "../decorators/user.decorator";
 
 @Controller("auth")
 export class AuthController {
