@@ -27,16 +27,16 @@ export class UpdatePutUserDto {
 
   @IsOptional()
   @IsDateString()
-  birthAt: string;
+  birthAt?: string;
 
   @IsString()
   about: string;
 
   @IsOptional()
-  photo: Express.Multer.File;
+  photo?: Express.Multer.File;
 
   @IsOptional()
-  cover_photo: Express.Multer.File;
+  cover_photo?: Express.Multer.File;
 
   @IsOptional()
   @IsEnum(Role)

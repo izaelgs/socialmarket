@@ -12,7 +12,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn({
     unsigned: true,
   })
-  id: number;
+  id?: number;
 
   @Column({
     length: 63,
@@ -32,7 +32,7 @@ export class UserEntity {
     type: "date",
     nullable: true,
   })
-  birthAt: Date;
+  birthAt?: Date;
 
   @Column()
   username: string;
@@ -41,16 +41,16 @@ export class UserEntity {
   about: string;
 
   @Column()
-  photo: string;
+  photo?: string;
 
   @Column()
-  cover_photo: string;
+  cover_photo?: string;
 
   @CreateDateColumn()
-  createdAt: string;
+  createdAt?: Date;
 
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt?: Date;
 
   @Column({ default: Role.User })
   role: number;
