@@ -65,6 +65,8 @@ export class AuthService {
 
     const { access_token } = await this.createToken(user);
 
+    console.log(res)
+
     return res
       .cookie("access_token", access_token, {
         expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
@@ -75,7 +77,7 @@ export class AuthService {
   }
 
   async logout(@Response() res) {
-    return res.clearCookie("access_token").send();
+    return res.clearCookie("access_token").send() ? true : false;
   }
 
   async forget(email: string) {
