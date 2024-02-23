@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Role } from "../../enums/role.enum";
+import { Associate } from "../../associates/entities/associate.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -54,4 +56,9 @@ export class UserEntity {
 
   @Column({ default: Role.User })
   role: number;
+
+  @OneToMany(() => Associate, (associate) => associate.user, {
+    cascade: true,
+  })
+  associates?: Associate[];
 }

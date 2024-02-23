@@ -1,10 +1,10 @@
 import { AuthService } from "./auth.service";
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserEntityRepository } from "../testing/user-repository-mock";
+import { UserEntityRepository } from "../testing/user/user-repository-mock";
 import { jwtServiceMock } from "../testing/jwt-service-mock";
-import { userServiceMock } from "../testing/user-service-mock";
+import { userServiceMock } from "../testing/user/user-service-mock";
 import { emailServiceMock } from "../testing/mailer-service-mock copy";
-import { userEntityList } from "../testing/user-entity-list.mock";
+import { userEntityList } from "../testing/user/user-entity-list.mock";
 import { accessTokenServiceMock } from "../testing/token.mock";
 import { jwtPayloadMock } from "../testing/jwt-payload.mock";
 import { responseMock } from "../testing/response.mock";

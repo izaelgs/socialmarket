@@ -1,7 +1,7 @@
-import { UserService } from "../user/user.service";
+import { AssociatesService } from "../../associates/associates.service";
 
-export const userServiceMock = {
-  provide: UserService,
+export const AssociateServiceMock = {
+  provide: AssociatesService,
   useValue: {
     show: jest.fn(),
     create: jest.fn(),

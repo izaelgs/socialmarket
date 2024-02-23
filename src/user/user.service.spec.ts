@@ -1,8 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UserService } from "./user.service";
-import { UserEntityRepository } from "../testing/user-repository-mock";
+import { UserEntityRepository } from "../testing/user/user-repository-mock";
 import { FileService } from "../file/file.service";
-import { userEntityList } from "../testing/user-entity-list.mock";
+import { userEntityList } from "../testing/user/user-entity-list.mock";
 import { Repository } from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
@@ -10,7 +10,7 @@ import { createUserDto } from "../testing/create-user-dto";
 import {
   updatePatchUserDTO,
   updatePutUserDTO,
-} from "../testing/update-user-dto";
+} from "../testing/user/update-user-dto";
 
 describe("UserService", () => {
   let service: UserService;

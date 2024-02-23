@@ -9,8 +9,8 @@ import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule } from "@nestjs/config";
 import { FileModule } from "./file/file.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserEntity } from "./user/entities/user.entity";
 import { EmailService } from './email/email.service';
+import { AssociatesModule } from './associates/associates.module';
 
 @Module({
   imports: [
@@ -31,9 +31,10 @@ import { EmailService } from './email/email.service';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [UserEntity],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.ENV === 'development',
     }),
+    AssociatesModule,
   ],
   controllers: [AppController],
   providers: [

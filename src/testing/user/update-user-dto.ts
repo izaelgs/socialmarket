@@ -1,6 +1,6 @@
-import { Role } from "../enums/role.enum";
-import { UpdatePatchUserDto } from "../user/dto/update-patch-user.dto";
-import { UpdatePutUserDto } from "../user/dto/update-put-user.dto copy";
+import { Role } from "../../enums/role.enum";
+import { UpdatePatchUserDto } from "../../user/dto/update-patch-user.dto";
+import { UpdatePutUserDto } from "../../user/dto/update-put-user.dto copy";
 
 export const updatePutUserDTO: UpdatePutUserDto = {
   name: "John Doe",

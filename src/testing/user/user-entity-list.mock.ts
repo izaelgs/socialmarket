@@ -1,5 +1,5 @@
-import { Role } from "../enums/role.enum";
-import { UserEntity } from "../user/entities/user.entity";
+import { Role } from "../../enums/role.enum";
+import { UserEntity } from "../../user/entities/user.entity";
 
 export const userEntityList: UserEntity[] = [
   {

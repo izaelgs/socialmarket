@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UserController } from "./user.controller";
 import { UserService } from "./user.service";
-import { UserEntityRepository } from "../testing/user-repository-mock";
+import { UserEntityRepository } from "../testing/user/user-repository-mock";
 import { FileService } from "../file/file.service";
 import { AuthService } from "../auth/auth.service";
 import { JwtService } from "@nestjs/jwt";
