@@ -11,6 +11,7 @@ import { FileModule } from "./file/file.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { EmailService } from './email/email.service';
 import { AssociatesModule } from './associates/associates.module';
+import { PostModule } from "./posts/post.module";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AssociatesModule } from './associates/associates.module';
       synchronize: process.env.ENV === 'development',
     }),
     AssociatesModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [

@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { Role } from "../../enums/role.enum";
 import { Associate } from "../../associates/entities/associate.entity";
+import { Post } from "src/posts/entities/user.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -61,4 +62,9 @@ export class UserEntity {
     cascade: true,
   })
   associates?: Associate[];
+
+  @OneToMany(() => Post, (post) => post.user, {
+    cascade: true,
+  })
+  posts?: Post[];
 }

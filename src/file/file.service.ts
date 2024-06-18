@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 // import { writeFile } from "fs/promises";
 import * as AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
@@ -36,7 +36,8 @@ export class FileService {
       const s3Response = await this.s3.upload(params).promise();
       return s3Response;
     } catch (error) {
-      throw error;
+      console.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 
