@@ -8,7 +8,7 @@ import { UpdatePatchUserDto } from "./dto/update-patch-user.dto";
 import { UpdatePutUserDto } from "./dto/update-put-user.dto copy";
 import * as bcrypt from "bcrypt";
 import slugify from "slugify";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FileService } from "../file/file.service";
@@ -27,7 +27,7 @@ export class UserService {
 
     data.password = await bcrypt.hash(data.password, await bcrypt.genSalt());
 
-    data.username = slugify(data.name, { lower: true });
+    data.username = slugify(data.name + new Date().getTime(), { lower: true });
 
     const user = this.usersRepository.create(data);
     return await this.usersRepository.save(user);
@@ -86,7 +86,17 @@ export class UserService {
 
     if (name) data.name = name;
     if (email) data.email = email;
-    if (username) data.username = username;
+    if (username) {
+      const existingUser = await this.usersRepository.findOne({
+        where: { id: Not(id), username },
+      });
+
+      if (existingUser)
+        throw new BadRequestException("Username already exists.");
+
+      data.username = username;
+    }
+
     if (about) data.about = about;
 
     if (photo && typeof photo !== "string") {

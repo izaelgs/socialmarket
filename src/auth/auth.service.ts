@@ -118,7 +118,7 @@ export class AuthService {
 
     return res
       .cookie("access_token", access_token, {
-        expires: new Date(new Date().getTime() + 30 * 1000),
+        expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
         sameSite: "strict",
         httpOnly: true,
       })
