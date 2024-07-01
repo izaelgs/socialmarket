@@ -21,9 +21,7 @@ export class PostService {
   ) {}
 
   async create(data: CreatePostDto, user: UserEntity) {
-    console.log("data.image", data.image);
     if (data.image && typeof data.image !== "string") {
-      console.log("upload image");
       const photoResponse = await this.fileService.upload(
         data.image[0],
         `post-images/${user.id}`,
