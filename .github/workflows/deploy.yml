@@ -28,9 +28,9 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_USER: ubuntu
-          EC2_HOST: ec2-15-228-226-213.sa-east-1.compute.amazonaws.com
+          EC2_HOST: ec2-18-228-199-124.sa-east-1.compute.amazonaws.com
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-          rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" ./dist $EC2_USER@$EC2_HOST:/home/ubuntu/seu-repositorio/
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/seu-repositorio && npm install && pm2 restart nome-da-aplicacao"
+          rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" ./dist $EC2_USER@$EC2_HOST:/home/ubuntu/socialmarket/
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/socialmarket && npm install && pm2 restart socialmarket"
