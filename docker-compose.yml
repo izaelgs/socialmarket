@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:3000"
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 3306
+      DATABASE_USER: root
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: socialmarket
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+    command: sh -c "sleep 10 && npm start"
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  db_data:

@@ -15,7 +15,9 @@ import { PostModule } from "./posts/post.module";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true, // Torna o ConfigModule acessível globalmente na aplicação
+    }),
     ThrottlerModule.forRoot([
       {
         ttl: 100,
@@ -27,11 +29,11 @@ import { PostModule } from "./posts/post.module";
     FileModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      host: "socialmarket-mysql",
+      port: 3306,
+      username: "root",
+      password: "password",
+      database: "socialmarket",
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.ENV === 'development',
     }),

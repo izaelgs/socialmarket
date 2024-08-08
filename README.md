@@ -1,73 +1,148 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Socialmarket
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este repositório contém o código-fonte do projeto Socialmarket, uma aplicação construída com NestJS para fornecer uma plataforma de mercado social.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Descrição
 
-## Description
+Socialmarket é uma aplicação server-side escalável e eficiente, desenvolvida utilizando o framework [NestJS](https://nestjs.com/).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Instalação
 
-## Installation
+Para instalar as dependências do projeto, execute:
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Running the app
+## Executando a Aplicação
 
+Para executar a aplicação, utilize um dos seguintes comandos:
+
+### Ambiente de desenvolvimento
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start
 ```
 
-## Test
-
+### Modo watch
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Support
+### Modo de produção
+```bash
+npm run start:prod
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Testes
 
-## Stay in touch
+Para executar os testes da aplicação, utilize:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Testes unitários
+```bash
+npm run test
+```
 
-## License
+### Testes end-to-end
+```bash
+npm run test:e2e
+```
 
-Nest is [MIT licensed](LICENSE).
+### Cobertura de testes
+```bash
+npm run test:cov
+```
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT.
+
+## Passos para Deploy em Produção
+
+### 1. Atualize o Sistema e Instale o Certbot
+```bash
+sudo apt update
+sudo apt install certbot
+```
+
+### 2. Obtenha Certificados SSL com Certbot
+```bash
+sudo certbot certonly --standalone -d domain.com
+```
+
+### 3. Instale e Configure o Nginx
+
+#### Instale o Nginx:
+```bash
+sudo apt install nginx
+```
+
+#### Crie e edite a configuração para o Nginx:
+```bash
+sudo nano /etc/nginx/sites-available/domain.com
+```
+
+#### Adicione a seguinte configuração:
+```bash
+server {
+    listen 80;
+    server_name domain.com;
+    return 301 https://$host$request_uri;  # Redirecionar HTTP para HTTPS
+}
+
+server {
+    listen 443 ssl;
+    server_name domain.com;
+
+    ssl_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:3000;  # Ajuste de acordo com a porta da sua aplicação
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+#### Execute os comandos
+```bash
+sudo mkdir -p /etc/nginx/sites-enabled
+sudo ln -s /etc/nginx/sites-available/socialmarket-api.iza.dev.br /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+### Docker Setup
+
+#### Crie uma rede Docker:
+```bash
+docker network create mynetwork
+```
+
+#### Execute o MySQL no Docker:
+```bash
+docker run --name socialmarket-mysql --network mynetwork -e MYSQL_ROOT_PASSWORD=password -d -p 3306:3306 mysql:latest
+```
+
+#### Acesse o container MySQL:
+```bash
+docker exec -it socialmarket-mysql bash
+```
+
+#### No terminal do container, acesse o MySQL:
+```bash
+mysql -u root -p
+```
+
+#### Crie o esquema de banco de dados:
+```bash
+CREATE SCHEMA socialmarket;
+SHOW DATABASES;
+```
+
+#### Execute a aplicação no Docker:
+```bash
+docker run --name socialmarket-api --network mynetwork --env-file .env -d -p 3000:3000 izaeldev/socialmarket-api:1.0
+```
