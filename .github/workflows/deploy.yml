@@ -32,5 +32,5 @@ jobs:
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-          rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" ./dist $EC2_USER@$EC2_HOST:/home/ubuntu/socialmarket/
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/socialmarket && npm install && pm2 restart socialmarket"
+          rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no"
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "docker stop socialmarket-api && docker run --name socialmarket-api --network mynetwork --env-file .env -d -p 3000:3000 izaeldev/socialmarket-api:latest"

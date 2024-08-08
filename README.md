@@ -58,6 +58,50 @@ Este projeto está licenciado sob a licença MIT.
 
 ## Passos para Deploy em Produção
 
+Para instalar o Docker em uma máquina Ubuntu, siga os passos abaixo:
+
+Primeiro, atualize o índice de pacotes do apt:
+
+```bash
+sudo apt-get update
+```
+
+Instale os pacotes necessários para que o apt possa usar repositórios via HTTPS:
+
+```bash
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+```
+
+Adicione a chave GPG oficial do Docker:
+
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+
+Adicione o repositório do Docker ao APT:
+
+```bash
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
+
+Atualize o índice de pacotes do apt novamente:
+
+```bash
+sudo apt-get update
+```
+
+Certifique-se de instalar a versão do Docker do repositório oficial do Docker, em vez da versão padrão do Ubuntu:
+
+```bash
+sudo apt-get install docker-ce
+```
+
+Verifique se a instalação foi bem-sucedida executando o comando abaixo. Este comando deve exibir a versão do Docker instalada:
+
+```bash
+docker --version
+```
+
 ### 1. Atualize o Sistema e Instale o Certbot
 ```bash
 sudo apt update
