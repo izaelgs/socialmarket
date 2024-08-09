@@ -3,13 +3,23 @@ import { DataSource } from "typeorm";
 
 dotenv.config();
 
+console.log({
+  type: "mysql",
+  host: process.env.DATABASE_HOST,
+  port: 3306,
+  username: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
+  migrations: [`${__dirname}/migrations/**/*.{ts,js}`],
+});
+
 const dataSource = new DataSource({
   type: "mysql",
-  host: "socialmarket-mysql",
+  host: process.env.DATABASE_HOST,
   port: 3306,
-  username: "root",
-  password: "password",
-  database: "socialmarket",
+  username: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
   migrations: [`${__dirname}/migrations/**/*.{ts,js}`],
 });
 

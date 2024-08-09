@@ -160,32 +160,6 @@ sudo systemctl restart nginx
 
 ### Docker Setup
 
-#### Crie uma rede Docker:
-```bash
-docker network create mynetwork
-```
-
-#### Execute o MySQL no Docker:
-```bash
-docker run --name socialmarket-mysql --network mynetwork -e MYSQL_ROOT_PASSWORD=password -d -p 3306:3306 mysql:latest
-```
-
-#### Acesse o container MySQL:
-```bash
-docker exec -it socialmarket-mysql bash
-```
-
-#### No terminal do container, acesse o MySQL:
-```bash
-mysql -u root -p
-```
-
-#### Crie o esquema de banco de dados:
-```bash
-CREATE SCHEMA socialmarket;
-SHOW DATABASES;
-```
-
 #### Execute a aplicação no Docker:
 ```bash
 docker run --name socialmarket-api --network mynetwork --env-file .env -d -p 3000:3000 izaeldev/socialmarket-api:1.0
