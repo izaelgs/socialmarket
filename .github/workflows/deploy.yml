@@ -48,5 +48,5 @@ jobs:
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
           sudo docker stop socialmarket-api || true
           sudo docker rm socialmarket-api || true
-          sudo docker run -d --name socialmarket-api -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
+          sudo docker run --name socialmarket-api --env-file .env -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
         EOF
