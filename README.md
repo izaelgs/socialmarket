@@ -1,166 +1,166 @@
 # Socialmarket
 
-Este repositório contém o código-fonte do projeto Socialmarket, uma aplicação construída com NestJS para fornecer uma plataforma de mercado social.
+This repository contains the source code for the Socialmarket project, an application built with NestJS to provide a social marketplace platform.
 
-## Descrição
+## Description
 
-Socialmarket é uma aplicação server-side escalável e eficiente, desenvolvida utilizando o framework [NestJS](https://nestjs.com/).
+Socialmarket is a scalable and efficient server-side application developed using the [NestJS](https://nestjs.com/) framework.
 
-## Instalação
+## Installation
 
-Para instalar as dependências do projeto, execute:
+To install the project dependencies, run:
 
 ```bash
 npm install
 ```
 
-## Executando a Aplicação
+## Running the Application
 
-Para executar a aplicação, utilize um dos seguintes comandos:
+To run the application, use one of the following commands:
 
-### Ambiente de desenvolvimento
+### Development environment
 ```bash
 npm run start
 ```
 
-### Modo watch
+### Watch mode
 ```bash
 npm run start:dev
 ```
 
-### Modo de produção
+### Development mode
 ```bash
-npm run start:prod
+npm run start:dev
 ```
 
-## Testes
+## Testing
 
-Para executar os testes da aplicação, utilize:
+To run the application tests, use:
 
-### Testes unitários
+### Unit tests
 ```bash
 npm run test
 ```
 
-### Testes end-to-end
+### End-to-end tests
 ```bash
 npm run test:e2e
 ```
 
-### Cobertura de testes
+### Test coverage
 ```bash
 npm run test:cov
 ```
 
-## Licença
+## License
 
-Este projeto está licenciado sob a licença MIT.
+This project is licensed under the MIT License.
 
-## Passos para Deploy em Produção
+## Steps for Production Deployment
 
-Para instalar o Docker em uma máquina Ubuntu, siga os passos abaixo:
+To install Docker on an Ubuntu machine, follow the steps below:
 
-Primeiro, atualize o índice de pacotes do apt:
+First, update the apt package index:
 
 ```bash
 sudo apt-get update
 ```
 
-Instale os pacotes necessários para que o apt possa usar repositórios via HTTPS:
+Install the necessary packages to allow apt to use repositories over HTTPS:
 
 ```bash
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 ```
 
-Adicione a chave GPG oficial do Docker:
+Add Docker’s official GPG key:
 
 ```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
-Adicione o repositório do Docker ao APT:
+Add Docker's repository to APT sources:
 
 ```bash
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 ```
 
-Atualize o índice de pacotes do apt novamente:
+Update the apt package index again:
 
 ```bash
 sudo apt-get update
 ```
 
-Certifique-se de instalar a versão do Docker do repositório oficial do Docker, em vez da versão padrão do Ubuntu:
+Make sure you are installing from the Docker repository instead of the default Ubuntu repository:
 
 ```bash
 sudo apt-get install docker-ce
 ```
 
-Verifique se a instalação foi bem-sucedida executando o comando abaixo. Este comando deve exibir a versão do Docker instalada:
+Verify that the installation was successful by running the following command. This should display the installed Docker version:
 
 ```bash
 docker --version
 ```
 
-### 1. Atualize o Sistema e Instale o Certbot
+### 1. Update the System and Install Certbot
 ```bash
 sudo apt update
 sudo apt install certbot
 ```
 
-### 2. Obtenha Certificados SSL com Certbot
+### 2. Obtain SSL Certificates with Certbot
 ```bash
-sudo certbot certonly --standalone -d domain.com
+sudo certbot certonly --standalone -d {{domain.com}}
 ```
 
-### 3. Instale e Configure o Nginx
+### 3. Install and Configure Nginx
 
-#### Instale o Nginx:
+#### Install Nginx:
 ```bash
 sudo apt install nginx
 ```
 
-#### Crie e edite a configuração para o Nginx:
+#### Create and edit the configuration for Nginx:
 ```bash
-sudo nano /etc/nginx/sites-available/domain.com
+sudo nano /etc/nginx/sites-available/{{domain.com}}
 ```
 
-#### Adicione a seguinte configuração:
+#### Add the following configuration:
 ```bash
 server {
-    listen 80;
-    server_name domain.com;
-    return 301 https://$host$request_uri;  # Redirecionar HTTP para HTTPS
+  listen 80;
+  server_name {{domain.com}};
+  return 301 https://$host$request_uri;  # Redirect HTTP to HTTPS
 }
 
 server {
-    listen 443 ssl;
-    server_name domain.com;
+  listen 443 ssl;
+  server_name {{domain.com}};
 
-    ssl_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/{{domain.com}}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{domain.com}}/privkey.pem;
 
-    location / {
-        proxy_pass http://localhost:3000;  # Ajuste de acordo com a porta da sua aplicação
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
+  location / {
+    proxy_pass http://localhost:3000;  # Adjust according to your application's port
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
 }
 ```
 
-#### Execute os comandos
+#### Run the following commands:
 ```bash
 sudo mkdir -p /etc/nginx/sites-enabled
-sudo ln -s /etc/nginx/sites-available/socialmarket-api.iza.dev.br /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/{{domain.com}} /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
 
 ### Docker Setup
 
-#### Execute a aplicação no Docker:
+#### Run the application in Docker:
 ```bash
-docker run --name socialmarket-api --network mynetwork --env-file .env -d -p 3000:3000 izaeldev/socialmarket-api:1.0
+docker run --name {{appname}} --network mynetwork --env-file .env -d -p 3000:3000 {{dockerUser}}/{{appname}}:1.0
 ```
