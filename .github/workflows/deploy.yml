@@ -45,8 +45,8 @@ jobs:
     - name: Deploy to VPS
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << EOF
-          docker pull ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
-          docker stop socialmarket-api || true
-          docker rm socialmarket-api || true
-          docker run -d --name socialmarket-api -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
+          sudo docker stop socialmarket-api || true
+          sudo docker rm socialmarket-api || true
+          sudo docker run -d --name socialmarket-api -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
         EOF
