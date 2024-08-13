@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class FileService {
-  AWS_S3_BUCKET = "social-market";
+  AWS_S3_BUCKET = "socialmarket-files";
 
   s3 = new AWS.S3({
     accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
