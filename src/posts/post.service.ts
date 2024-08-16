@@ -9,7 +9,7 @@ import { UpdatePutPostDto } from "./dto/update-put-post.dto";
 import { IsNull, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "src/user/entities/user.entity";
-import { Post } from "./entities/user.entity";
+import { Post } from "./entities/post.entity";
 import { FileService } from "src/file/file.service";
 
 @Injectable()

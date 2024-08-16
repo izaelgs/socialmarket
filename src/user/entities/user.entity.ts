@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Role } from "../../enums/role.enum";
 import { Associate } from "../../associates/entities/associate.entity";
-import { Post } from "src/posts/entities/user.entity";
+import { Post } from "src/posts/entities/post.entity";
 
 @Entity("users")
 export class UserEntity {

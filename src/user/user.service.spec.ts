@@ -58,13 +58,13 @@ describe("UserService", () => {
     it("should update a user", async () => {
       const result = await service.update(1, updatePutUserDTO);
 
-      expect(result).toEqual(userEntityList[0]);
+      expect(result).toEqual({ ...userEntityList[0], ...updatePutUserDTO });
     });
 
     it("should update a user with partial data", async () => {
       const result = await service.updatePartial(1, updatePatchUserDTO);
 
-      expect(result).toEqual(userEntityList[0]);
+      expect(result).toEqual({ ...userEntityList[0], ...updatePatchUserDTO });
     });
   });
 

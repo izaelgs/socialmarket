@@ -1,11 +1,13 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { PostEntityRepository } from "../testing/post/post-repository-mock";
+import { PostRepository } from "../testing/post/post-repository-mock";
 import { FileService } from "../file/file.service";
 import { AuthService } from "../auth/auth.service";
 import { JwtService } from "@nestjs/jwt";
 import { EmailService } from "../email/email.service";
 import { PostController } from "./post.controller";
 import { PostService } from "./post.service";
+import { UserEntityRepository } from "src/testing/user/user-repository-mock";
+import { UserService } from "src/user/user.service";
 
 describe("PostController", () => {
   let controller: PostController;
@@ -19,7 +21,9 @@ describe("PostController", () => {
         JwtService,
         AuthService,
         FileService,
-        PostEntityRepository,
+        PostRepository,
+        UserEntityRepository,
+        UserService,
       ],
     }).compile();
 
