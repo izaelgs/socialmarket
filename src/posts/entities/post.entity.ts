@@ -65,9 +65,13 @@ export class Post {
 
   @ManyToOne(() => Post, (post) => post.comments, {
     onDelete: "CASCADE",
+    eager: false,
   })
   referencePost?: Post;
 
-  @OneToMany(() => Post, (post) => post.referencePost)
+  @OneToMany(() => Post, (post) => post.referencePost, {
+    onDelete: "CASCADE",
+    eager: false,
+  })
   comments?: Post[];
 }

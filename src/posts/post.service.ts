@@ -34,11 +34,33 @@ export class PostService {
   }
 
   async findAll() {
-    return await this.postsRepository.find({
+    const mainPosts = await this.postsRepository.find({
       where: { referencePostId: IsNull() },
       order: { createdAt: "DESC" },
-      relations: ["user", "comments", "comments.comments"],
+      relations: ["user"], // Relacionamentos que você deseja carregar com o post principal
     });
+
+    return await Promise.all(
+      mainPosts.map(async (post) => {
+        post.comments = await this.findCommentsRecursively(post.id);
+        return post;
+      }),
+    );
+  }
+
+  private async findCommentsRecursively(postId: number): Promise<Post[]> {
+    const comments = await this.postsRepository.find({
+      where: { referencePostId: postId },
+      order: { createdAt: "DESC" },
+      relations: ["user"], // Relacionamentos que você deseja carregar com os comentários
+    });
+
+    return await Promise.all(
+      comments.map(async (comment) => {
+        comment.comments = await this.findCommentsRecursively(comment.id);
+        return comment;
+      }),
+    );
   }
 
   async findOne(id: number) {
