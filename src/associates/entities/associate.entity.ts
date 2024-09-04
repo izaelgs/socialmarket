@@ -3,11 +3,13 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
+  ManyToMany,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { UserEntity } from "../../user/entities/user.entity";
+import { Store } from "../../store/entities/store.entity";
 
 @Entity("associates")
 export class Associate {
@@ -54,4 +56,7 @@ export class Associate {
   @ManyToOne(() => UserEntity, (user) => user.associates)
   @JoinColumn({ name: "user_id" })
   user?: UserEntity;
+
+  @ManyToMany(() => Store, (store) => store.associates)
+  stores?: Store[];
 }

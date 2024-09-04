@@ -11,6 +11,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { EmailService } from "./email/email.service";
 import { AssociatesModule } from "./associates/associates.module";
 import { PostModule } from "./posts/post.module";
+import { StoreModule } from './store/store.module';
 import * as Joi from "joi";
 
 @Module({
@@ -56,6 +57,7 @@ import * as Joi from "joi";
 
     AssociatesModule,
     PostModule,
+    StoreModule,
   ],
   controllers: [AppController],
   providers: [
