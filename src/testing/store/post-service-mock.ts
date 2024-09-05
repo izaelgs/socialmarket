@@ -1,7 +1,7 @@
-import { AssociatesService } from "../../associates/associates.service";
+import { StoreService } from "../../store/store.service";
 
-export const AssociateServiceMock = {
-  provide: AssociatesService,
+export const StoreServiceMock = {
+  provide: StoreService,
   useValue: {
     show: jest.fn(),
     create: jest.fn(),
