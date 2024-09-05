@@ -8,9 +8,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { UserEntity } from "../../user/entities/user.entity";
 import { Associate } from "../../associates/entities/associate.entity";
+import { Product } from "src/products/entities/product.entity";
 
 @Entity("stores")
 export class Store {
@@ -74,6 +76,12 @@ export class Store {
   })
   creatorId: number;
 
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
+
   @ManyToOne(() => UserEntity, (user) => user.stores)
   @JoinColumn({ name: "creatorId" })
   creator: UserEntity;
@@ -92,9 +100,8 @@ export class Store {
   })
   associates?: Associate[];
 
-  @CreateDateColumn()
-  createdAt?: Date;
-
-  @UpdateDateColumn()
-  updatedAt?: Date;
+  @OneToMany(() => Product, (product) => product.store, {
+    cascade: true,
+  })
+  products?: Product[];
 }

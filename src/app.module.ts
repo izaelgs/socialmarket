@@ -12,6 +12,7 @@ import { EmailService } from "./email/email.service";
 import { AssociatesModule } from "./associates/associates.module";
 import { PostModule } from "./posts/post.module";
 import { StoreModule } from './store/store.module';
+import { ProductsModule } from './products/products.module';
 import * as Joi from "joi";
 
 @Module({
@@ -58,6 +59,7 @@ import * as Joi from "joi";
     AssociatesModule,
     PostModule,
     StoreModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [
