@@ -34,6 +34,12 @@ export class StoreController {
     return this.storeService.findAll();
   }
 
+  @UseGuards(AuthGuard)
+  @Get("user")
+  findAllByUser(@User() user) {
+    return this.storeService.findAllByUser(user);
+  }
+
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.storeService.findOne(+id);

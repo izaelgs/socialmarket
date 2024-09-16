@@ -38,6 +38,14 @@ export class StoreService {
     return await this.storesRepository.find();
   }
 
+  async findAllByUser(user: UserEntity) {
+    return await this.storesRepository.find({
+      where: {
+        creatorId: user.id,
+      },
+    });
+  }
+
   async findOne(id: number) {
     return await this.storesRepository.findOne({ where: { id } });
   }
