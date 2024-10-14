@@ -29,7 +29,7 @@ export class Product {
   @Column({ type: "decimal", precision: 2, scale: 1, default: 0 })
   rating: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", nullable: true })
   imgLink: string;
 
   @Column({ type: "int" })

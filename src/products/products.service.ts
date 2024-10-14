@@ -21,6 +21,14 @@ export class ProductsService {
     return await this.productsRepository.find();
   }
 
+  async findRecent() {
+    return await this.productsRepository.find({
+      order: { createdAt: "DESC" },
+      take: 10,
+      relations: ["store"],
+    });
+  }
+
   async findOne(id: number) {
     return await this.productsRepository.findOne({ where: { id } });
   }
