@@ -65,12 +65,12 @@ jobs:
     - name: Deploy to VPS
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << EOF
-          # Stop and remove all containers
-          sudo docker stop $(sudo docker ps -aq) || true
-          sudo docker rm $(sudo docker ps -aq) || true
+          # Stop and remove the existing container if it exists
+          sudo docker stop socialmarket-api || true
+          sudo docker rm socialmarket-api || true
 
-          # Remove all images
-          sudo docker rmi $(sudo docker images -q) || true
+          # Remove the existing image if it exists
+          sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest || true
 
           # Pull the new image
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
