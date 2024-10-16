@@ -63,8 +63,14 @@ jobs:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Deploy to VPS
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << EOF
+          # Login to Docker Hub
+          echo "$DOCKER_PASSWORD" | sudo docker login -u "$DOCKER_USERNAME" --password-stdin
+
           # Stop and remove the existing container if it exists
           sudo docker stop socialmarket-api || true
           sudo docker rm socialmarket-api || true
@@ -77,4 +83,7 @@ jobs:
 
           # Run the new container
           sudo docker run --name socialmarket-api --env-file .env -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/socialmarket-api:latest
+
+          # Logout from Docker Hub
+          sudo docker logout
         EOF
