@@ -8,6 +8,7 @@ import { PostController } from "./post.controller";
 import { PostService } from "./post.service";
 import { UserEntityRepository } from "src/testing/user/user-repository-mock";
 import { UserService } from "src/user/user.service";
+import { StripeService } from "../stripe/stripe.service";
 
 describe("PostController", () => {
   let controller: PostController;
@@ -24,6 +25,15 @@ describe("PostController", () => {
         PostRepository,
         UserEntityRepository,
         UserService,
+        {
+          provide: StripeService,
+          useValue: {
+            createCustomer: jest
+              .fn()
+              .mockResolvedValue({ id: "mock_stripe_customer_id" }),
+            // Add other methods as needed
+          },
+        },
       ],
     }).compile();
 

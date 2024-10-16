@@ -8,6 +8,7 @@ import { FileService } from "../file/file.service";
 import { EmailService } from "../email/email.service";
 import { UserEntityRepository } from "src/testing/user/user-repository-mock";
 import { UserService } from "src/user/user.service";
+import { StripeService } from "src/stripe/stripe.service";
 
 describe("AssociatesController", () => {
   let controller: AssociatesController;
@@ -24,6 +25,15 @@ describe("AssociatesController", () => {
         AssociateEntityRepository,
         UserEntityRepository,
         UserService,
+        {
+          provide: StripeService,
+          useValue: {
+            // Add mock methods if needed
+            // For example:
+            // createCustomer: jest.fn(),
+            // createCharge: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
