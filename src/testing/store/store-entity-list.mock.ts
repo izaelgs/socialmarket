@@ -21,5 +21,6 @@ export const StoreList: Store[] = [
       username: "mockuser",
       email: "mockuser@example.com",
     } as UserEntity,
+    stripeAccountId: "",
   },
 ];

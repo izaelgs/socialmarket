@@ -33,6 +33,7 @@ export const ProductList: Product[] = [
         username: "mockuser",
         email: "mockuser@example.com",
       } as UserEntity,
+      stripeAccountId: "",
     },
   },
 ];

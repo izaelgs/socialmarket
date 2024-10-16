@@ -10,6 +10,7 @@ import { Role } from "../../enums/role.enum";
 import { Associate } from "../../associates/entities/associate.entity";
 import { Post } from "src/posts/entities/post.entity";
 import { Store } from "../../store/entities/store.entity";
+import { Order } from "src/orders/entities/order.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -73,4 +74,10 @@ export class UserEntity {
     cascade: true,
   })
   stores?: Store[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
+  @Column({ nullable: true })
+  stripeCustomerId?: string;
 }

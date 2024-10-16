@@ -21,7 +21,7 @@ export class AuthService {
     private usersRepository: Repository<UserEntity>,
     private readonly userService: UserService,
     private readonly emailService: EmailService,
-  ) { }
+  ) {}
 
   async createToken(user: UserEntity, issuer?: string, expiresIn?: string) {
     return {
@@ -86,7 +86,11 @@ export class AuthService {
 
     if (!user) throw new NotFoundException("Email está incorreto.");
 
-    const { access_token } = await this.createToken(user, "reset_password", "1 day");
+    const { access_token } = await this.createToken(
+      user,
+      "reset_password",
+      "1 day",
+    );
 
     this.emailService.sendEmail(
       email,

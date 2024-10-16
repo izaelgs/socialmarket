@@ -9,5 +9,6 @@ export const userEntityList: UserEntity[] = [
     password: "$2b$10$TyAmHNxRGS84BWb/gbS6AuHhH7xbz85aR5wrq7dqush6Bl.ImLxPK",
     role: Role.User,
     about: "about me",
+    orders: [],
   },
 ];

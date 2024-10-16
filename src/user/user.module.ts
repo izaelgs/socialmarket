@@ -12,12 +12,14 @@ import { UserEntity } from "./entities/user.entity";
 import { AuthModule } from "../auth/auth.module";
 import { FileModule } from "../file/file.module";
 import { UserIdCheckMiddleware } from "../middlewares/user-id-check.middleware";
+import { StripeModule } from "../stripe/stripe.module";
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
     FileModule,
     TypeOrmModule.forFeature([UserEntity]),
+    StripeModule,
   ],
   controllers: [UserController],
   providers: [UserService],

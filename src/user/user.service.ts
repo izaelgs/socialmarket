@@ -12,6 +12,7 @@ import { Not, Repository } from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FileService } from "../file/file.service";
+import { StripeService } from "src/stripe/stripe.service";
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
     private readonly fileService: FileService,
+    private readonly stripeService: StripeService,
   ) {}
 
   async create(data: CreateUserDto) {
@@ -29,7 +31,16 @@ export class UserService {
 
     data.username = slugify(data.name + new Date().getTime(), { lower: true });
 
-    const user = this.usersRepository.create(data);
+    // Create a Stripe customer
+    const stripeCustomer = await this.stripeService.createCustomer({
+      email: data.email,
+      name: data.name,
+    });
+
+    const user = this.usersRepository.create({
+      ...data,
+      stripeCustomerId: stripeCustomer.id,
+    });
     return await this.usersRepository.save(user);
   }
 

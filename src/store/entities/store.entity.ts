@@ -104,4 +104,7 @@ export class Store {
     cascade: true,
   })
   products?: Product[];
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  stripeAccountId: string;
 }

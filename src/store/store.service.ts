@@ -5,12 +5,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Store } from "./entities/store.entity";
 import { Not, Repository } from "typeorm";
 import { UserEntity } from "src/user/entities/user.entity";
+import { StripeService } from "../stripe/stripe.service";
 
 @Injectable()
 export class StoreService {
   constructor(
     @InjectRepository(Store)
     private readonly storesRepository: Repository<Store>,
+    private readonly stripeService: StripeService,
   ) {}
 
   async create(createStoreDto: CreateStoreDto, user: UserEntity) {
@@ -27,9 +29,15 @@ export class StoreService {
       );
     }
 
+    // Create a Stripe Connected Account
+    const stripeAccountId = await this.stripeService.createConnectedAccount(
+      user.email,
+    );
+
     const store = this.storesRepository.create({
       ...createStoreDto,
       creatorId: user.id,
+      stripeAccountId,
     });
     return await this.storesRepository.save(store);
   }

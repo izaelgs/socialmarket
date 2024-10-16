@@ -11,9 +11,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { EmailService } from "./email/email.service";
 import { AssociatesModule } from "./associates/associates.module";
 import { PostModule } from "./posts/post.module";
-import { StoreModule } from './store/store.module';
-import { ProductsModule } from './products/products.module';
+import { StoreModule } from "./store/store.module";
+import { ProductsModule } from "./products/products.module";
 import * as Joi from "joi";
+import { OrdersModule } from "./orders/orders.module";
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import * as Joi from "joi";
     PostModule,
     StoreModule,
     ProductsModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [
