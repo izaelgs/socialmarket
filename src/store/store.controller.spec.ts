@@ -7,14 +7,14 @@ import { UserEntityRepository } from "src/testing/user/user-repository-mock";
 import { UserService } from "src/user/user.service";
 import { EmailService } from "src/email/email.service";
 import { FileService } from "src/file/file.service";
-import { StripeService } from "src/stripe/stripe.service";
 import { Store } from "./entities/store.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { ConfigService } from "@nestjs/config";
+import { OrdersService } from "src/orders/orders.service";
+import { StripeService } from "src/stripe/stripe.service";
 
 describe("StoreController", () => {
   let controller: StoreController;
-  let stripeService: StripeService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,22 +42,28 @@ describe("StoreController", () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn((key: string) => {
-              // Return mock values based on the key
+              // Mock implementation of ConfigService
               if (key === "STRIPE_SECRET_KEY") return "mock_stripe_key";
               // Add other configuration keys as needed
               return null;
             }),
           },
         },
+        {
+          provide: OrdersService,
+          useValue: {
+            // Add mock methods here if needed
+          },
+        },
       ],
     }).compile();
 
     controller = module.get<StoreController>(StoreController);
-    stripeService = module.get<StripeService>(StripeService);
   });
 
   it("should be defined", () => {
     expect(controller).toBeDefined();
-    expect(stripeService).toBeDefined();
   });
+
+  // Add more tests here
 });
