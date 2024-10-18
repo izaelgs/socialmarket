@@ -1,9 +1,16 @@
-import { Controller, Post, Body, Get, Param, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Req,
+  RawBodyRequest,
+} from "@nestjs/common";
 import { StripeService } from "./stripe.service";
-import { AuthGuard } from "src/guards/auth.guard";
+import { Request } from "express";
 
 @Controller("stripe")
-@UseGuards(AuthGuard)
 export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
 
@@ -11,12 +18,12 @@ export class StripeController {
   async createCheckoutSession(
     @Body() body: { orderId: number; amount: number; customerId: string },
   ) {
-    const sessionId = await this.stripeService.createCheckoutSession(
+    const checkoutUrl = await this.stripeService.createCheckoutSession(
       body.orderId,
       body.amount,
       body.customerId,
     );
-    return { sessionId };
+    return { checkoutUrl };
   }
 
   @Post("create-connected-account")
@@ -42,6 +49,28 @@ export class StripeController {
       body.amount,
       body.destinationAccountId,
     );
+    return { success: true };
+  }
+
+  @Post("webhook")
+  async handleWebhook(@Req() req: RawBodyRequest<Request>) {
+    const signature = req.headers["stripe-signature"] as string;
+
+    if (!signature) {
+      throw new Error("Missing stripe-signature header");
+    }
+
+    const rawBody = req.rawBody;
+
+    if (!rawBody) {
+      throw new Error("No raw body found in the request");
+    }
+
+    await this.stripeService.handleWebhook({
+      rawBody,
+      signature,
+    });
+
     return { success: true };
   }
 }

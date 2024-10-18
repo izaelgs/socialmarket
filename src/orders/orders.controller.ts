@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { OrdersService } from "./orders.service";
+import { OrderPaymentService } from "./order-payment.service";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
 import { Roles } from "src/decorators/role.decorator";
@@ -21,12 +22,19 @@ import { UserEntity } from "src/user/entities/user.entity";
 @Controller("orders")
 @UseGuards(AuthGuard)
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly orderPaymentService: OrderPaymentService,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createOrderDto: CreateOrderDto, @User() user: UserEntity) {
-    return this.ordersService.create(createOrderDto, user.id);
+  async create(
+    @Body() createOrderDto: CreateOrderDto,
+    @User() user: UserEntity,
+  ) {
+    const { productIds, ...orderData } = createOrderDto;
+    return this.ordersService.create(orderData, productIds, user.id);
   }
 
   @Get()
@@ -58,18 +66,18 @@ export class OrdersController {
     @Param("id") id: string,
     @User() user: UserEntity,
   ) {
-    const sessionId = await this.ordersService.createCheckoutSession(
+    const checkoutUrl = await this.orderPaymentService.createCheckoutSession(
       +id,
       user.stripeCustomerId,
     );
-    return { sessionId };
+    return { checkoutUrl };
   }
 
   @Post(":id/process-payment")
   @Roles(Role.Admin)
   @UseGuards(RoleGuard)
   async processPayment(@Param("id") id: string) {
-    await this.ordersService.processPayment(+id);
+    await this.orderPaymentService.processPayment(+id);
     return { success: true };
   }
 }

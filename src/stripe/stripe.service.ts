@@ -1,12 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import Stripe from "stripe";
+import { OrdersService } from "../orders/orders.service";
 
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private ordersService: OrdersService,
+  ) {
     this.stripe = new Stripe(this.configService.get("STRIPE_SECRET_KEY"), {
       apiVersion: "2024-09-30.acacia", // Use the latest API version
     });
@@ -44,12 +48,13 @@ export class StripeService {
       mode: "payment",
       success_url: `${this.configService.get(
         "FRONTEND_URL",
-      )}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${this.configService.get("FRONTEND_URL")}/order/cancel`,
+      )}order/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${this.configService.get("FRONTEND_URL")}order/cancel`,
       customer: customerId,
+      metadata: { orderId: orderId.toString() },
     });
 
-    return session.id;
+    return session.url;
   }
 
   async createConnectedAccount(email: string): Promise<string> {
@@ -85,5 +90,41 @@ export class StripeService {
       currency: "usd",
       destination: destinationAccountId,
     });
+  }
+
+  async handleWebhook(body: {
+    signature: string;
+    rawBody: Buffer;
+  }): Promise<void> {
+    const signature = body.signature;
+    const rawBody = body.rawBody;
+
+    try {
+      const event = this.stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        this.configService.get("STRIPE_WEBHOOK_SECRET"),
+      );
+
+      switch (event.type) {
+        case "checkout.session.completed":
+          await this.handleCheckoutSessionCompleted(event.data.object);
+          break;
+      }
+    } catch (err) {
+      throw new Error(`Webhook Error: ${err.message}`);
+    }
+  }
+
+  private async handleCheckoutSessionCompleted(
+    checkoutSession: Stripe.Checkout.Session,
+  ): Promise<void> {
+    const orderId = checkoutSession.metadata.orderId;
+
+    if (orderId) {
+      await this.ordersService.updateOrderStatus(orderId, "paid");
+    } else {
+      throw new Error("No orderId found in payment intent metadata");
+    }
   }
 }

@@ -1,92 +1,128 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
 import { Order } from "./entities/order.entity";
-import { StripeService } from "../stripe/stripe.service";
+import { Product } from "../products/entities/product.entity";
+import { UserEntity } from "../user/entities/user.entity";
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order)
-    private readonly ordersRepository: Repository<Order>,
-    private readonly stripeService: StripeService,
+    private readonly orderRepository: Repository<Order>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto, userId: number) {
-    const newOrder = this.ordersRepository.create(createOrderDto);
-    newOrder.userId = userId;
-    return await this.ordersRepository.save(newOrder);
+  async create(
+    orderData: Partial<CreateOrderDto>,
+    productIds: number[],
+    userId: number,
+  ): Promise<Order> {
+    // Find the user
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+
+    // Find the products
+    const products = await this.productRepository.findByIds(productIds);
+    if (products.length !== productIds.length) {
+      throw new NotFoundException("Some products were not found");
+    }
+
+    // Calculate total amount
+    const totalAmount = products.reduce(
+      (sum, product) => sum + Number(product.price),
+      0,
+    );
+
+    // Create the order
+    const order = this.orderRepository.create({
+      ...orderData,
+      totalAmount,
+      user,
+      products,
+      status: "pending", // Set initial status
+    });
+
+    // Save the order
+    const savedOrder = await this.orderRepository.save(order);
+
+    // Return the order with relations
+    return this.orderRepository.findOne({
+      where: { id: savedOrder.id },
+      relations: ["user", "products"],
+    });
   }
 
   async findAll() {
-    return await this.ordersRepository.find({
+    return await this.orderRepository.find({
       relations: ["user", "products"],
     });
   }
 
   async findOne(id: number) {
-    return await this.ordersRepository.findOne({
+    return await this.orderRepository.findOne({
       where: { id },
       relations: ["user", "products"],
     });
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
-    const orderToUpdate = await this.ordersRepository.findOne({
+    const orderToUpdate = await this.orderRepository.findOne({
       where: { id },
+      relations: ["products"],
     });
     if (!orderToUpdate) {
-      throw new Error(`Order with id ${id} not found`);
+      throw new NotFoundException(`Order with id ${id} not found`);
     }
-    const updatedOrder = Object.assign(orderToUpdate, updateOrderDto);
-    return await this.ordersRepository.save(updatedOrder);
+
+    // If productIds are provided in the updateOrderDto, update the products
+    if (updateOrderDto.productIds) {
+      const products = await this.productRepository.findByIds(
+        updateOrderDto.productIds,
+      );
+      if (products.length !== updateOrderDto.productIds.length) {
+        throw new NotFoundException("Some products were not found");
+      }
+      orderToUpdate.products = products;
+
+      // Recalculate total amount
+      orderToUpdate.totalAmount = products.reduce(
+        (sum, product) => sum + product.price,
+        0,
+      );
+    }
+
+    // Update other fields
+    Object.assign(orderToUpdate, updateOrderDto);
+
+    return await this.orderRepository.save(orderToUpdate);
   }
 
   async remove(id: number) {
-    const orderToRemove = await this.ordersRepository.findOne({
+    const orderToRemove = await this.orderRepository.findOne({
       where: { id },
     });
     if (!orderToRemove) {
-      throw new Error(`Order with id ${id} not found`);
+      throw new NotFoundException(`Order with id ${id} not found`);
     }
-    return await this.ordersRepository.remove(orderToRemove);
+    return await this.orderRepository.remove(orderToRemove);
   }
 
-  async createCheckoutSession(orderId: number, customerId: string) {
-    const order = await this.findOne(orderId);
-    if (!order) {
-      throw new Error(`Order with id ${orderId} not found`);
+  async updateOrderStatus(orderId: string, status: string): Promise<Order> {
+    const updatedOrder = await this.orderRepository.findOne({
+      where: { id: parseInt(orderId) },
+    });
+    if (!updatedOrder) {
+      throw new NotFoundException(`Order with id ${orderId} not found`);
     }
-
-    return this.stripeService.createCheckoutSession(
-      orderId,
-      order.totalAmount,
-      customerId,
-    );
-  }
-
-  async processPayment(orderId: number) {
-    const order = await this.findOne(orderId);
-    if (!order) {
-      throw new Error(`Order with id ${orderId} not found`);
-    }
-
-    // Update order status
-    order.status = "paid";
-    await this.ordersRepository.save(order);
-
-    // Transfer funds to product owners
-    for (const product of order.products) {
-      if (!product.store.stripeAccountId) {
-        throw new Error(
-          `Store for product ${product.id} does not have a Stripe account`,
-        );
-      }
-      const ownerAccountId = product.store.stripeAccountId;
-      const amount = product.price;
-      await this.stripeService.transferFunds(amount, ownerAccountId);
-    }
+    updatedOrder.status = status;
+    return await this.orderRepository.save(updatedOrder);
   }
 }
