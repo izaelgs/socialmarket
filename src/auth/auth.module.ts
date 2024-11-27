@@ -5,8 +5,9 @@ import { AuthService } from "./auth.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { FileModule } from "../file/file.module";
 import { UserModule } from "../user/user.module";
-import { EmailModule } from "../email/email.module";
+import { EmailModule } from "../common/email/email.module";
 import { UserEntity } from "../user/entities/user.entity";
+import { GoogleStrategy } from "./google.strategy";
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { UserEntity } from "../user/entities/user.entity";
     EmailModule,
     TypeOrmModule.forFeature([UserEntity]),
   ],
-  providers: [AuthService],
+  providers: [AuthService, GoogleStrategy],
   controllers: [AuthController],
   exports: [AuthService],
 })

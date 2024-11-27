@@ -3,7 +3,7 @@ import { PostRepository } from "../testing/post/post-repository-mock";
 import { FileService } from "../file/file.service";
 import { AuthService } from "../auth/auth.service";
 import { JwtService } from "@nestjs/jwt";
-import { EmailService } from "../email/email.service";
+import { EmailService } from "../common/email/email.service";
 import { PostController } from "./post.controller";
 import { PostService } from "./post.service";
 import { UserEntityRepository } from "src/testing/user/user-repository-mock";

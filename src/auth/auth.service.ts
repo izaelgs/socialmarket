@@ -11,7 +11,9 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "../user/entities/user.entity";
 import { UserService } from "../user/user.service";
-import { EmailService } from "../email/email.service";
+import { EmailService } from "../common/email/email.service";
+import { GoogleProfile } from "./interfaces/google-profile.interface";
+import { Role } from "src/enums/role.enum";
 
 @Injectable()
 export class AuthService {
@@ -84,7 +86,7 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new NotFoundException("Email está incorreto.");
+    if (!user) return true;
 
     const { access_token } = await this.createToken(
       user,
@@ -92,10 +94,13 @@ export class AuthService {
       "1 day",
     );
 
-    this.emailService.sendEmail(
+    const resetLink = `${process.env.FRONTEND_URL}reset-password/${access_token}`;
+
+    await this.emailService.sendEmail(
       email,
       "Recuperação de senha",
-      `Para recuperar a senha, clique no link: ${process.env.APP_URL}/reset-password/${access_token}`,
+      "reset-password",
+      { resetLink },
     );
 
     return true;
@@ -124,5 +129,35 @@ export class AuthService {
         httpOnly: true,
       })
       .send({ user });
+  }
+
+  async validateOAuthLogin(profile: GoogleProfile) {
+    const email = profile.emails[0].value;
+    const user = await this.usersRepository.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      const newUser = await this.userService.create({
+        name: profile.displayName,
+        email: email,
+        username: email.split("@")[0],
+        role: Role.User,
+        password: btoa(profile.id),
+        photo: profile.photos?.[0]?.value || null,
+        about: "",
+      });
+
+      return { ...newUser, googleAuthKey: btoa(profile.id) };
+    }
+
+    if (profile.photos?.[0]?.value && user.photo !== profile.photos[0].value) {
+      user.photo = profile.photos[0].value;
+      const updatedUser = await this.usersRepository.save(user);
+
+      return { ...updatedUser, googleAuthKey: btoa(profile.id) };
+    }
+
+    return { ...user, googleAuthKey: btoa(profile.id) };
   }
 }

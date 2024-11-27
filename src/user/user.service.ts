@@ -13,6 +13,7 @@ import { UserEntity } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FileService } from "../file/file.service";
 import { StripeService } from "src/stripe/stripe.service";
+import { EmailService } from "src/common/email/email.service";
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,7 @@ export class UserService {
     private readonly usersRepository: Repository<UserEntity>,
     private readonly fileService: FileService,
     private readonly stripeService: StripeService,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(data: CreateUserDto) {
@@ -41,6 +43,21 @@ export class UserService {
       ...data,
       stripeCustomerId: stripeCustomer.id,
     });
+
+    const name = user.name.split(" ")[0];
+    const loginLink = `${process.env.FRONTEND_URL}login`;
+
+    const linkedinLink = "https://www.linkedin.com/in/izaelgs/";
+    const twitterLink = "https://x.com/Izael65";
+    const instagramLink = "https://www.instagram.com/izael_hs/";
+
+    if (!user.email.includes("email@email.com"))
+      await this.emailService.sendEmail(
+        user.email,
+        "Bem-vindo ao nosso app!",
+        "welcome",
+        { name, loginLink, linkedinLink, twitterLink, instagramLink },
+      );
     return await this.usersRepository.save(user);
   }
 

@@ -5,7 +5,7 @@ import { UserEntityRepository } from "../testing/user/user-repository-mock";
 import { FileService } from "../file/file.service";
 import { AuthService } from "../auth/auth.service";
 import { JwtService } from "@nestjs/jwt";
-import { EmailService } from "../email/email.service";
+import { EmailService } from "../common/email/email.service";
 import { StripeService } from "src/stripe/stripe.service";
 import { UserEntity } from "./entities/user.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";

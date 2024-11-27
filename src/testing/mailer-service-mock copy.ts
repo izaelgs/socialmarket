@@ -1,4 +1,4 @@
-import { EmailService } from "../email/email.service";
+import { EmailService } from "../common/email/email.service";
 
 export const emailServiceMock = {
   provide: EmailService,

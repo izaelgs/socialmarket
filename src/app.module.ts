@@ -8,7 +8,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { FileModule } from "./file/file.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { EmailService } from "./email/email.service";
+import { EmailService } from "./common/email/email.service";
 import { AssociatesModule } from "./associates/associates.module";
 import { PostModule } from "./posts/post.module";
 import { StoreModule } from "./store/store.module";

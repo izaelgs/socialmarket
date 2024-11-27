@@ -5,21 +5,25 @@ import {
   Get,
   Patch,
   Post,
+  Req,
   Response,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
+import { AuthGuard as PassportAuthGuard } from "@nestjs/passport";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+
 import { AuthLoginDTO } from "./dto/auth-login.dto";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
 import { AuthForgetDTO } from "./dto/auth-forget.dto";
 import { AuthService } from "./auth.service";
 import { AuthResetDTO } from "./dto/auth-reset.dto";
-import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { UserService } from "../user/user.service";
 import { FileService } from "../file/file.service";
 import { AuthGuard } from "../guards/auth.guard";
 import { User } from "../decorators/user.decorator";
+import { ConfigService } from "@nestjs/config";
 
 @Controller("auth")
 export class AuthController {
@@ -27,6 +31,7 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly authService: AuthService,
     private readonly fileService: FileService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post("login")
@@ -37,6 +42,27 @@ export class AuthController {
   @Get("logout")
   async logout(@Response() res) {
     return await this.authService.logout(res);
+  }
+
+  @Get("google")
+  @UseGuards(PassportAuthGuard("google"))
+  async googleAuth(@Req() req) {
+    return req.user;
+  }
+
+  @Get("google/callback")
+  @UseGuards(PassportAuthGuard("google"))
+  async googleAuthRedirect(@Req() req, @Response() res) {
+    const { user } = req;
+
+    const { access_token } = await this.authService.createToken(user);
+    return res
+      .cookie("access_token", access_token, {
+        httpOnly: true,
+        sameSite: "strict",
+        expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+      })
+      .redirect(this.configService.get<string>("FRONTEND_DASHBOARD_URL"));
   }
 
   @Post("register")

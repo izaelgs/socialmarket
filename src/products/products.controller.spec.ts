@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ProductsController } from "./products.controller";
 import { ProductsService } from "./products.service";
-import { EmailService } from "src/email/email.service";
+import { EmailService } from "src/common/email/email.service";
 import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "src/auth/auth.service";
 import { FileService } from "src/file/file.service";

@@ -5,7 +5,7 @@ import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "../auth/auth.service";
 import { AssociateEntityRepository } from "../testing/associate/associate-repository-mock";
 import { FileService } from "../file/file.service";
-import { EmailService } from "../email/email.service";
+import { EmailService } from "../common/email/email.service";
 import { UserEntityRepository } from "src/testing/user/user-repository-mock";
 import { UserService } from "src/user/user.service";
 import { StripeService } from "src/stripe/stripe.service";

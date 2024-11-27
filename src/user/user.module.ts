@@ -13,11 +13,13 @@ import { AuthModule } from "../auth/auth.module";
 import { FileModule } from "../file/file.module";
 import { UserIdCheckMiddleware } from "../middlewares/user-id-check.middleware";
 import { StripeModule } from "../stripe/stripe.module";
+import { EmailModule } from "src/common/email/email.module";
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
     FileModule,
+    EmailModule,
     TypeOrmModule.forFeature([UserEntity]),
     StripeModule,
   ],
