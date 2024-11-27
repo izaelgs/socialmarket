@@ -12,6 +12,7 @@ import {
   updatePutUserDTO,
 } from "../testing/user/update-user-dto";
 import { StripeService } from "../stripe/stripe.service";
+import { EmailService } from "src/common/email/email.service";
 
 describe("UserService", () => {
   let service: UserService;
@@ -21,6 +22,7 @@ describe("UserService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        EmailService,
         FileService,
         UserEntityRepository,
         {
