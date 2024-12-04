@@ -15,8 +15,8 @@ describe("AppController", () => {
   });
 
   describe("root", () => {
-    it('should return "Wellcome to Club Bônus api!!!"', () => {
-      expect(appController.getHello()).toBe("Wellcome to Club Bônus api!!!");
+    it('should return "Wellcome to Socialmarket api!!!"', () => {
+      expect(appController.getHello()).toBe("Wellcome to Socialmarket api!!!");
     });
   });
 });
