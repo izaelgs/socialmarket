@@ -1,10 +1,10 @@
-# Socialmarket
+# Club Bônus
 
-This repository contains the source code for the Socialmarket project, an application built with NestJS to provide a social marketplace platform.
+This repository contains the source code for the Club Bônus project, an application built with NestJS to provide a social marketplace platform.
 
 ## Description
 
-Socialmarket is a scalable and efficient server-side application developed using the [NestJS](https://nestjs.com/) framework.
+Club Bônus is a scalable and efficient server-side application developed using the [NestJS](https://nestjs.com/) framework.
 
 ## Installation
 

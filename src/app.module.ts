@@ -1,20 +1,15 @@
 import { Module, forwardRef } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { UserModule } from "./user/user.module";
-import { AuthModule } from "./auth/auth.module";
+import { EstablishmentModule } from "./models/establishment/establishment.module";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { FileModule } from "./file/file.module";
+import { FileModule } from "./common/file/file.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { EmailService } from "./email/email.service";
-import { AssociatesModule } from "./associates/associates.module";
-import { PostModule } from "./posts/post.module";
-import { StoreModule } from "./store/store.module";
-import { ProductsModule } from "./products/products.module";
+import { EmailService } from "./common/email/email.service";
 import * as Joi from "joi";
-import { OrdersModule } from "./orders/orders.module";
+import { AuthModule } from "./services/auth/auth.module";
 
 @Module({
   imports: [
@@ -38,7 +33,6 @@ import { OrdersModule } from "./orders/orders.module";
         limit: 10,
       },
     ]),
-    forwardRef(() => UserModule),
     forwardRef(() => AuthModule),
     FileModule,
     TypeOrmModule.forRootAsync({
@@ -57,11 +51,7 @@ import { OrdersModule } from "./orders/orders.module";
       }),
     }),
 
-    AssociatesModule,
-    PostModule,
-    StoreModule,
-    ProductsModule,
-    OrdersModule,
+    EstablishmentModule,
   ],
   controllers: [AppController],
   providers: [

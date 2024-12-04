@@ -3,6 +3,6 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export class AppService {
   getHello(): string {
-    return "Wellcome to Socialmarket api!!!";
+    return "Bem-vindo à API do Club Bônus!!!";
   }
 }
