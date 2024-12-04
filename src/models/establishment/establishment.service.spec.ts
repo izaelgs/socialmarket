@@ -10,8 +10,14 @@ import { createUserDto } from "../../testing/create-user-dto";
 import {
   updatePatchUserDTO,
   updatePutUserDTO,
+<<<<<<< HEAD:src/models/establishment/establishment.service.spec.ts
 } from "../../testing/user/update-user-dto";
 import { StripeService } from "../../services/stripe/stripe.service";
+=======
+} from "../testing/user/update-user-dto";
+import { StripeService } from "../stripe/stripe.service";
+import { EmailService } from "src/common/email/email.service";
+>>>>>>> 18e40cf9b897dd866e82c93cf7754fcd6250c8da:src/user/user.service.spec.ts
 
 describe("UserService", () => {
   let service: UserService;
@@ -21,6 +27,7 @@ describe("UserService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        EmailService,
         FileService,
         UserEntityRepository,
         {

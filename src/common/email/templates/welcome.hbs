@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .button {
+            background-color: #2E5BE3;
+            border: none;
+            color: white !important;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h2>Bem-vindo ao SocialMarket!</h2>
+        <p>Olá {{name}},</p>
+        <p>É com grande satisfação que damos as boas-vindas à nossa plataforma social de compra e venda!</p>
+        
+        <p>No SocialMarket, você poderá:</p>
+        <ul>
+            <li>Conectar-se com amigos e conhecer novas pessoas</li>
+            <li>Comprar e vender produtos de forma fácil e segura</li>
+            <li>Participar de comunidades com seus mesmos interesses</li>
+            <li>Descobrir produtos únicos e especiais</li>
+            <li>Compartilhar suas experiências e recomendações</li>
+        </ul>
+
+        <p>Para começar a explorar o SocialMarket, clique no botão abaixo para acessar sua conta:</p>
+        
+        <p style="text-align: center;">
+            <a href="{{loginLink}}" class="button">Acessar Minha Conta</a>
+        </p>
+
+        <p>Ou acesse diretamente através do link:</p>
+        <p>{{loginLink}}</p>
+
+        <div class="footer">
+            <p>Siga-nos em nossas redes sociais para ficar por dentro das novidades:</p>
+            <p>
+                LinkedIn: {{linkedinLink}}<br>
+                Twitter: {{twitterLink}}<br>
+                Instagram: {{instagramLink}}
+            </p>
+            <p>Este é um email automático, por favor não responda.</p>
+        </div>
+    </div>
+</body>
+</html> 
